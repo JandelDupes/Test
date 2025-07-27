@@ -1,0 +1,84 @@
+-- GAG Dark Dev Scripts GUI
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+local Button = Instance.new("TextButton")
+local CloseButton = Instance.new("TextButton")
+
+ScreenGui.Name = "GAGDarkDevGUI"
+ScreenGui.Parent = game.CoreGui
+
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Frame.Position = UDim2.new(0.35, 0, 0.35, 0)
+Frame.Size = UDim2.new(0, 300, 0, 120)
+Frame.Active = true
+Frame.Draggable = true
+
+Title.Name = "Title"
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "GAG Dark Dev Scripts"
+Title.TextColor3 = Color3.fromRGB(0, 255, 127)
+Title.TextSize = 16
+
+Button.Name = "CDButton"
+Button.Parent = Frame
+Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Button.Position = UDim2.new(0.1, 0, 0.5, 0)
+Button.Size = UDim2.new(0.8, 0, 0, 30)
+Button.Font = Enum.Font.Gotham
+Button.Text = "Change Pet CD to 15 Seconds"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextSize = 14
+
+CloseButton.Name = "Close"
+CloseButton.Parent = Frame
+CloseButton.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+CloseButton.Position = UDim2.new(1, -25, 0, 0)
+CloseButton.Size = UDim2.new(0, 25, 0, 25)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 14
+
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+Button.MouseButton1Click:Connect(function()
+    local count = 0
+    for _, descendant in pairs(game:GetDescendants()) do
+        if descendant:IsA("TextLabel") then
+            local label = descendant
+            local text = label.Text
+
+            -- === Pet Info Spoof Description with Proper Size and Alignment ===
+            if text:lower():find("opens its frills") or text:lower():match("every%s*%d+:%d+%sm") then
+                local parentFrame = label.Parent
+                local size = label.Size
+                local position = label.Position
+                label:Destroy()
+
+                local spoofDesc = Instance.new("TextLabel")
+                spoofDesc.Name = "SpoofedPetInfo"
+                spoofDesc.Size = size
+                spoofDesc.Position = position
+                spoofDesc.Text = "Every 0.15m\nopens its frills\nand spits venom!"
+                spoofDesc.Font = Enum.Font.Gotham
+                spoofDesc.TextColor3 = Color3.fromRGB(255, 255, 255)
+                spoofDesc.BackgroundTransparency = 1
+                spoofDesc.TextSize = 12 -- Matches pet info size
+                spoofDesc.TextWrapped = true
+                spoofDesc.TextXAlignment = Enum.TextXAlignment.Left
+                spoofDesc.TextYAlignment = Enum.TextYAlignment.Top
+                spoofDesc.Parent = parentFrame
+                count += 1
+            end
+        end
+    end
+    Button.Text = "Cooldown spoofed (" .. count .. ")"
+end)
