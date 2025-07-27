@@ -71,7 +71,7 @@ Button.MouseButton1Click:Connect(function()
                 spoofDesc.Font = Enum.Font.Gotham
                 spoofDesc.TextColor3 = Color3.fromRGB(255, 255, 255)
                 spoofDesc.BackgroundTransparency = 1
-                spoofDesc.TextSize = 11 -- Matches pet info size
+                spoofDesc.TextSize = 6 -- Matches pet info size
                 spoofDesc.TextWrapped = true
                 spoofDesc.TextXAlignment = Enum.TextXAlignment.Left
                 spoofDesc.TextYAlignment = Enum.TextYAlignment.Top
