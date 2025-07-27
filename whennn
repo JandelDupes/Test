@@ -66,12 +66,12 @@ Button.MouseButton1Click:Connect(function()
                 local spoofDesc = Instance.new("TextLabel")
                 spoofDesc.Name = "SpoofedPetInfo"
                 spoofDesc.Size = size
-                spoofDesc.Position = position
+                spoofDesc.Position = position + UDim2.new(0, 0, 0, 1)
                 spoofDesc.Text = "Every 0.15m\nopens its frills\nand spits venom!"
                 spoofDesc.Font = Enum.Font.Gotham
                 spoofDesc.TextColor3 = Color3.fromRGB(255, 255, 255)
                 spoofDesc.BackgroundTransparency = 1
-                spoofDesc.TextSize = 12 -- Matches pet info size
+                spoofDesc.TextSize = 11 -- Matches pet info size
                 spoofDesc.TextWrapped = true
                 spoofDesc.TextXAlignment = Enum.TextXAlignment.Left
                 spoofDesc.TextYAlignment = Enum.TextYAlignment.Top
@@ -80,5 +80,5 @@ Button.MouseButton1Click:Connect(function()
             end
         end
     end
-    Button.Text = "Cooldown spoofed (" .. count .. ")"
+    Button.Text = "Cooldown changed(" .. count .. ")"
 end)
