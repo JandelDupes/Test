@@ -65,7 +65,7 @@ Button.MouseButton1Click:Connect(function()
 
                 local spoofDesc = Instance.new("TextLabel")
                 spoofDesc.Name = "SpoofedPetInfo"
-                spoofDesc.Size = 8
+                spoofDesc.Size = size
                 spoofDesc.Position = position + UDim2.new(0, 0, 0, 1)
                 spoofDesc.Text = "Every 0.15m\nopens its frills\nand spits venom!"
                 spoofDesc.Font = Enum.Font.Gotham
