@@ -1,0 +1,132 @@
+-- GAG Dark Dev Scripts GUI by RedOwl
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local Button = Instance.new("TextButton")
+local Drag = Instance.new("Frame")
+
+ScreenGui.Name = "GAGDarkDevGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.Size = UDim2.new(0, 280, 0, 140)
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+-- Drag logic
+Drag.Name = "Drag"
+Drag.Parent = MainFrame
+Drag.BackgroundTransparency = 1
+Drag.Size = UDim2.new(1, 0, 0.2, 0)
+
+local dragging, dragInput, dragStart, startPos
+Drag.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
+end)
+Drag.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
+end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+									   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+-- GUI title
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 5)
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Text = "GAG Dark Dev Scripts"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+
+-- Button
+Button.Name = "ChangePetCD"
+Button.Parent = MainFrame
+Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Button.Position = UDim2.new(0.15, 0, 0.45, 0)
+Button.Size = UDim2.new(0.7, 0, 0.3, 0)
+Button.Font = Enum.Font.GothamSemibold
+Button.Text = "Change Pet CD to 15 Seconds"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextSize = 14
+
+local btnCorner = Instance.new("UICorner", Button)
+btnCorner.CornerRadius = UDim.new(0, 6)
+
+-- Improved Spoof Logic with Logs
+Button.MouseButton1Click:Connect(function()
+	local spoofed = false
+	local changedElements = 0
+
+	for _, gui in ipairs(PlayerGui:GetDescendants()) do
+		if gui:IsA("TextLabel") then
+			local text = gui.Text
+
+			-- Match cooldown times like "13:07m"
+			if string.match(text, "^%d+:%d%d[m]?$") then
+				gui.Visible = false
+				local spoof = Instance.new("TextLabel")
+				spoof.Size = gui.Size
+				spoof.Position = gui.Position
+				spoof.Font = gui.Font
+				spoof.TextColor3 = Color3.fromRGB(255, 255, 0)
+				spoof.BackgroundTransparency = 1
+				spoof.Text = "15s"
+				spoof.TextSize = gui.TextSize
+				spoof.TextXAlignment = gui.TextXAlignment
+				spoof.TextYAlignment = gui.TextYAlignment
+				spoof.Parent = gui.Parent
+				changedElements += 1
+			end
+
+			-- Match description: "Every 13:07m opens its frills..."
+			if text:lower():match("every%s%d+:%d%dm") or text:lower():find("opens its frills") then
+				gui.Visible = false
+				local spoofDesc = Instance.new("TextLabel")
+				spoofDesc.Size = gui.Size
+				spoofDesc.Position = gui.Position
+				spoofDesc.Font = gui.Font
+				spoofDesc.TextColor3 = Color3.fromRGB(200, 255, 255)
+				spoofDesc.BackgroundTransparency = 1
+				spoofDesc.Text = "Every 0.15m opens its frills and spits out venom!"
+				spoofDesc.TextSize = gui.TextSize
+				spoofDesc.TextWrapped = true
+				spoofDesc.TextXAlignment = gui.TextXAlignment
+				spoofDesc.TextYAlignment = gui.TextYAlignment
+				spoofDesc.Parent = gui.Parent
+				changedElements += 1
+			end
+		end
+	end
+
+	if changedElements > 0 then
+		Button.Text = "Cooldown Spoofed ?"
+		print("Spoofed " .. changedElements .. " cooldown text(s)")
+	else
+		Button.Text = "No Cooldowns Found"
+		warn("Couldn¡¯t find any cooldowns to spoof. Make sure GUI is open!")
+	end
+end)
