@@ -1,0 +1,134 @@
+-- GAG Dark Dev Scripts GUI by RedOwl
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local Button = Instance.new("TextButton")
+local Drag = Instance.new("Frame")
+
+ScreenGui.Name = "GAGDarkDevGUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.Position = UDim2.new(0.3, 0, 0.3, 0)
+MainFrame.Size = UDim2.new(0, 280, 0, 140)
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+-- Drag setup
+Drag.Name = "Drag"
+Drag.Parent = MainFrame
+Drag.BackgroundTransparency = 1
+Drag.Size = UDim2.new(1, 0, 0.2, 0)
+
+local dragging, dragInput, dragStart, startPos
+Drag.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then dragging = false end
+		end)
+	end
+end)
+Drag.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
+end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+									   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+-- Title
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 5)
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Text = "GAG Dark Dev Scripts"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 18
+
+-- Button
+Button.Name = "ChangePetCD"
+Button.Parent = MainFrame
+Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Button.Position = UDim2.new(0.15, 0, 0.45, 0)
+Button.Size = UDim2.new(0.7, 0, 0.3, 0)
+Button.Font = Enum.Font.GothamSemibold
+Button.Text = "Change Pet CD to 15 Seconds"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextSize = 14
+
+local btnCorner = Instance.new("UICorner", Button)
+btnCorner.CornerRadius = UDim.new(0, 6)
+
+-- Button Function: Spoof Cooldowns
+Button.MouseButton1Click:Connect(function()
+	local count = 0
+
+	for _, label in ipairs(PlayerGui:GetDescendants()) do
+		if label:IsA("TextLabel") then
+			local text = label.Text
+
+			-- === Active Pets Cooldown (like "13:07m") ===
+			if string.match(text, "^%d+:%d%d[m]?$") and label.Visible then
+				local parentFrame = label.Parent
+				local size = label.Size
+				local position = label.Position
+				label:Destroy()
+
+				local spoof = Instance.new("TextLabel")
+				spoof.Size = size
+				spoof.Position = position
+				spoof.Text = "15s"
+				spoof.Font = Enum.Font.GothamBold
+				spoof.TextColor3 = Color3.fromRGB(255, 255, 0)
+				spoof.BackgroundTransparency = 1
+				spoof.TextSize = 14
+				spoof.TextXAlignment = Enum.TextXAlignment.Center
+				spoof.TextYAlignment = Enum.TextYAlignment.Center
+				spoof.Parent = parentFrame
+				count += 1
+			end
+
+			-- === Pet Info Description (like "Every 13:07m opens...") ===
+			if text:lower():find("opens its frills") or text:lower():match("every%s*%d+:%d+%sm") then
+				local parentFrame = label.Parent
+				local size = label.Size
+				local position = label.Position
+				label:Destroy()
+
+				local spoofDesc = Instance.new("TextLabel")
+				spoofDesc.Name = "SpoofedPetInfo"
+				spoofDesc.Size = size
+				spoofDesc.Position = position
+				spoofDesc.Text = "Every 0.15m opens its frills and spits out venom!"
+				spoofDesc.Font = Enum.Font.Gotham
+				spoofDesc.TextColor3 = Color3.fromRGB(200, 255, 255)
+				spoofDesc.BackgroundTransparency = 1
+				spoofDesc.TextSize = 14
+				spoofDesc.TextWrapped = true
+				spoofDesc.TextXAlignment = Enum.TextXAlignment.Left
+				spoofDesc.TextYAlignment = Enum.TextYAlignment.Top
+				spoofDesc.Parent = parentFrame
+				count += 1
+			end
+		end
+	end
+
+	Button.Text = count > 0 and "Cooldown Spoofed ?" or "No Cooldown Found"
+end)
